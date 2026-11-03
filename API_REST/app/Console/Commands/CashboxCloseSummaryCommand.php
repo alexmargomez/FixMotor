@@ -17,7 +17,7 @@ class CashboxCloseSummaryCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'factupos:cashbox-summary
+    protected $signature = 'fixmotor:cashbox-summary
                             {--from= : Fecha inicial en formato YYYY-MM-DD}
                             {--to= : Fecha final en formato YYYY-MM-DD}
                             {--json : Imprime el reporte en formato JSON}';
@@ -53,7 +53,7 @@ class CashboxCloseSummaryCommand extends Command
         $kpis = $financial['kpis'];
 
         $this->info('=========================================================================');
-        $this->info('   FACTUPOS — ARQUEO DE CAJA, UTILIDAD NETA Y ESTADO DE CARTERA POS      ');
+        $this->info('   FIXMOTOR — ARQUEO DE CAJA, UTILIDAD NETA Y ESTADO DE CARTERA POS      ');
         $this->info('=========================================================================');
         $this->line(sprintf(
             'Período analizado: %s hasta %s',

@@ -16,7 +16,7 @@ class AuditInventoryCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'factupos:audit-inventory
+    protected $signature = 'fixmotor:audit-inventory
                             {--only-alerts : Muestra únicamente los productos con stock agotado o bajo el mínimo}
                             {--json : Imprime la salida en formato JSON estructurado}';
 
@@ -42,7 +42,7 @@ class AuditInventoryCommand extends Command
         $summary = $report['summary'];
 
         $this->info('=========================================================================');
-        $this->info('   FACTUPOS — AUDITORÍA DE INVENTARIO VALORIZADO Y BODEGA DE REPUESTOS   ');
+        $this->info('   FIXMOTOR — AUDITORÍA DE INVENTARIO VALORIZADO Y BODEGA DE REPUESTOS   ');
         $this->info('=========================================================================');
 
         $this->table(

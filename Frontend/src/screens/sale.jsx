@@ -248,7 +248,7 @@ const Sale = () => {
       <body>
         <div class="header">
           <div>
-            <h1 class="title">FACTUPOS — TALLER Y REPUESTOS</h1>
+            <h1 class="title">FIXMOTOR — TALLER Y REPUESTOS</h1>
             <div style="font-size:12px;color:#475569;margin-top:4px;">Fecha de emisión: ${dateStr}</div>
           </div>
           <div class="badge">COTIZACIÓN / PRESUPUESTO</div>
@@ -868,8 +868,8 @@ const Sale = () => {
                         if (e.key === 'Enter' && searchTerm.trim()) {
                           e.preventDefault();
                           if (
-                            window.__factuposBarcodeMatcher &&
-                            window.__factuposBarcodeMatcher(searchTerm)
+                            window.__fixmotorBarcodeMatcher &&
+                            window.__fixmotorBarcodeMatcher(searchTerm)
                           ) {
                             setSearchTerm('');
                           }
@@ -883,7 +883,7 @@ const Sale = () => {
                       addProduct={addProduct}
                       searchTerm={searchTerm}
                       onBarcodeMatch={(fn) => {
-                        window.__factuposBarcodeMatcher = fn;
+                        window.__fixmotorBarcodeMatcher = fn;
                       }}
                     />
                   </div>

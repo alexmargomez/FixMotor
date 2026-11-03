@@ -1,4 +1,4 @@
-# Factupos API REST — Backend
+# FixMotor API REST — Backend
 
 API RESTful desarrollada en **Laravel 11 (PHP 8.2)** con autenticación por tokens mediante **Laravel Sanctum**, base de datos **MariaDB 11.4** y generación de facturas en PDF/HTML con **SnappyPDF (`wkhtmltopdf`)**.
 
@@ -32,7 +32,7 @@ API RESTful desarrollada en **Laravel 11 (PHP 8.2)** con autenticación por toke
 
 ## Despliegue Rápido con Docker Compose (Recomendado)
 
-Desde la carpeta raíz del proyecto (`factuposAL/`), donde se encuentra el archivo `docker-compose.yml`:
+Desde la carpeta raíz del proyecto (`FixMotor/`), donde se encuentra el archivo `docker-compose.yml`:
 
 ```bash
 # 1. (Opcional) Copiar variables de entorno en la raíz
@@ -42,7 +42,7 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-El contenedor `factupos-backend` realizará automáticamente:
+El contenedor `fixmotor-backend` realizará automáticamente:
 1. Instalación de dependencias de Composer si no existen.
 2. Creación del archivo `.env` a partir de `.env.example` y generación de `APP_KEY`.
 3. Espera activa a que el servicio **MariaDB (`db`)** esté saludable (`service_healthy`).
@@ -56,7 +56,7 @@ El contenedor `factupos-backend` realizará automáticamente:
 El archivo `.env.example` viene preconfigurado para **MariaDB**:
 
 ```env
-APP_NAME="Factupos"
+APP_NAME="FixMotor"
 APP_ENV=local
 APP_KEY=
 APP_DEBUG=true
@@ -65,11 +65,11 @@ BACKEND_PORT=7000
 APP_URL=http://localhost:${BACKEND_PORT}
 
 DB_CONNECTION=mariadb
-DB_HOST=factupos-mariadb
+DB_HOST=fixmotor-mariadb
 DB_PORT=3306
-DB_DATABASE=factupos
-DB_USERNAME=factupos_user
-DB_PASSWORD=factupos_pass
+DB_DATABASE=fixmotor
+DB_USERNAME=fixmotor_user
+DB_PASSWORD=fixmotor_pass
 
 WKHTML_PDF_BINARY=/usr/bin/wkhtmltopdf
 WKHTML_IMG_BINARY=/usr/bin/wkhtmltoimage

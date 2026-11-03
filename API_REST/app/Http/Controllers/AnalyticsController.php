@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * Controlador de analítica ejecutiva y reportes consolidados para FactuPOS.
+ * Controlador de analítica ejecutiva y reportes consolidados para FixMotor.
  * Orquesta los servicios de dominio financiero, valorización de bodega,
  * tablero Kanban de taller y comisiones de mecánicos.
  */

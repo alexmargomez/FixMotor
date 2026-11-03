@@ -16,7 +16,7 @@ class MechanicsSettlementReportCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'factupos:mechanics-report
+    protected $signature = 'fixmotor:mechanics-report
                             {--from= : Fecha inicial en formato YYYY-MM-DD}
                             {--to= : Fecha final en formato YYYY-MM-DD}
                             {--json : Imprime el reporte en formato JSON}';
@@ -48,7 +48,7 @@ class MechanicsSettlementReportCommand extends Command
         }
 
         $this->info('=========================================================================');
-        $this->info('   FACTUPOS — REPORTE DE COMISIONES Y LIQUIDACIONES DE MECÁNICOS         ');
+        $this->info('   FIXMOTOR — REPORTE DE COMISIONES Y LIQUIDACIONES DE MECÁNICOS         ');
         $this->info('=========================================================================');
 
         $this->table(

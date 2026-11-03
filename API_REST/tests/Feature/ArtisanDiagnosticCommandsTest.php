@@ -35,10 +35,10 @@ class ArtisanDiagnosticCommandsTest extends TestCase
             'quantity' => 3,
         ]);
 
-        $this->artisan('factupos:audit-inventory --json')
+        $this->artisan('fixmotor:audit-inventory --json')
             ->assertExitCode(0);
 
-        $this->artisan('factupos:audit-inventory --only-alerts')
+        $this->artisan('fixmotor:audit-inventory --only-alerts')
             ->assertExitCode(0);
     }
 
@@ -60,10 +60,10 @@ class ArtisanDiagnosticCommandsTest extends TestCase
             'tecno_due_date' => Carbon::tomorrow()->toDateString(),
         ]);
 
-        $this->artisan('factupos:check-alerts --days=15 --km=500')
+        $this->artisan('fixmotor:check-alerts --days=15 --km=500')
             ->assertExitCode(0);
 
-        $this->artisan('factupos:check-alerts --json')
+        $this->artisan('fixmotor:check-alerts --json')
             ->assertExitCode(0);
     }
 
@@ -83,10 +83,10 @@ class ArtisanDiagnosticCommandsTest extends TestCase
             'expense_date' => Carbon::now(),
         ]);
 
-        $this->artisan('factupos:cashbox-summary')
+        $this->artisan('fixmotor:cashbox-summary')
             ->assertExitCode(0);
 
-        $this->artisan('factupos:mechanics-report')
+        $this->artisan('fixmotor:mechanics-report')
             ->assertExitCode(0);
     }
 }

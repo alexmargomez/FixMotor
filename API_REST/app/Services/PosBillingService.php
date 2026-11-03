@@ -152,7 +152,7 @@ class PosBillingService
         $docNumber = $sale->invoice->invoice_number ?? sprintf('FACT-%06d', $sale->id);
 
         $lines = [
-            "Hola *{$customerName}*, te enviamos tu *{$docTitle}* de *FactuPOS Taller*:",
+            "Hola *{$customerName}*, te enviamos tu *{$docTitle}* de *FixMotor Taller*:",
             "",
             "🧾 *Documento:* {$docNumber}",
             "📅 *Fecha:* " . ($sale->created_at ? $sale->created_at->format('Y-m-d H:i') : Carbon::now()->format('Y-m-d H:i')),

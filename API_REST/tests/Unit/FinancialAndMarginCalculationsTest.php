@@ -6,7 +6,7 @@ use App\Services\WorkshopKanbanService;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Pruebas unitarias de utilidades de normalización y reglas financieras de FactuPOS.
+ * Pruebas unitarias de utilidades de normalización y reglas financieras de FixMotor.
  */
 class FinancialAndMarginCalculationsTest extends TestCase
 {

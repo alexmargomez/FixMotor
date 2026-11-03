@@ -464,7 +464,7 @@ const LookDetail = ({ selectedOption, searchTerm, setNumber }) => {
       item.serviciosList && item.serviciosList.length > 0
         ? item.serviciosList.join(", ")
         : "Mantenimiento general";
-    let msg = `Hola *${item.customerName}*, te escribimos de *FactuPOS Taller*.\n\n`;
+    let msg = `Hola *${item.customerName}*, te escribimos de *FixMotor Taller*.\n\n`;
     if (status === "Listo para Entrega") {
       msg += `✅ Tu vehículo placa *${item.vehiclePlate}* ya se encuentra *LISTO PARA ENTREGA*.\n`;
     } else {
@@ -487,7 +487,7 @@ const LookDetail = ({ selectedOption, searchTerm, setNumber }) => {
     }
     const phone = rawPhone.length === 10 ? `57${rawPhone}` : rawPhone;
     const ownerName = item.customer?.name || "Cliente";
-    let msg = `Hola *${ownerName}*, te saludamos de *FactuPOS Taller*.\n\nTe enviamos el recordatorio preventivo para tu vehículo *${item.make} ${item.model}* placa *${item.plate}*:\n`;
+    let msg = `Hola *${ownerName}*, te saludamos de *FixMotor Taller*.\n\nTe enviamos el recordatorio preventivo para tu vehículo *${item.make} ${item.model}* placa *${item.plate}*:\n`;
     if (item.current_mileage) {
       msg += `• Kilometraje registrado: ${Number(item.current_mileage).toLocaleString("es-CO")} km\n`;
     }
@@ -742,7 +742,7 @@ const LookDetail = ({ selectedOption, searchTerm, setNumber }) => {
     link.href = url;
     link.setAttribute(
       "download",
-      `FactuPOS_${selectedOption}_${dateStr}.csv`
+      `FixMotor_${selectedOption}_${dateStr}.csv`
     );
     document.body.appendChild(link);
     link.click();

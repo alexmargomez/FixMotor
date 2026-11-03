@@ -17,7 +17,7 @@ class CheckVehicleAlertsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'factupos:check-alerts
+    protected $signature = 'fixmotor:check-alerts
                             {--days=15 : Días de anticipación para alertar vencimientos de SOAT y Tecnomecánica}
                             {--km=500 : Kilómetros de anticipación para alertar próximo cambio de aceite}
                             {--json : Imprime la salida en formato JSON}';
@@ -49,7 +49,7 @@ class CheckVehicleAlertsCommand extends Command
         }
 
         $this->info('=========================================================================');
-        $this->info('   FACTUPOS — MONITOR DE ALERTAS DE TALLER, SOAT, TECNO Y KILOMETRAJE    ');
+        $this->info('   FIXMOTOR — MONITOR DE ALERTAS DE TALLER, SOAT, TECNO Y KILOMETRAJE    ');
         $this->info('=========================================================================');
 
         $kanbanRows = array_map(function (array $col) {

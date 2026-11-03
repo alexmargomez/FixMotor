@@ -24,7 +24,7 @@ use Tests\TestCase;
 
 /**
  * Pruebas integrales de las reglas de validación y mensajes personalizados en español
- * de todas las clases FormRequest del dominio de FactuPOS.
+ * de todas las clases FormRequest del dominio de FixMotor.
  */
 class FormRequestValidationRulesTest extends TestCase
 {

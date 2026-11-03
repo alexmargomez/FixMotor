@@ -1,6 +1,6 @@
-# factupos-Frontend — Sistema POS, Inventario y Taller
+# fixmotor-Frontend — Sistema POS, Inventario y Taller
 
-Aplicación web moderna para punto de venta (POS), facturación, agendamiento de taller, control de inventario y reportes financieros de **Factupos**, construida con **React 19**, **Vite 6**, **Tailwind CSS v4** y **React Router v7**.
+Aplicación web moderna para punto de venta (POS), facturación, agendamiento de taller, control de inventario y reportes financieros de **FixMotor**, construida con **React 19**, **Vite 6**, **Tailwind CSS v4** y **React Router v7**.
 
 ---
 
@@ -48,7 +48,7 @@ VITE_API_URL="/api"
 
 ## Ejecución con Docker Compose (Recomendado)
 
-Desde el directorio raíz del proyecto (`Factupos/`):
+Desde el directorio raíz del proyecto (`FixMotor/`):
 
 ```bash
 docker compose up -d --build
