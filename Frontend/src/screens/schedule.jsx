@@ -365,7 +365,7 @@ const Schedule = () => {
         ? order.serviciosList.join(', ')
         : 'Mantenimiento general';
 
-    let message = `Hola *${customerName}*, te escribimos de *FactuPOS Taller*.\n\n`;
+    let message = `Hola *${customerName}*, te escribimos de *FixMotor Taller*.\n\n`;
     if (status === 'Listo para Entrega') {
       message += `✅ Te informamos que tu vehículo placa *${plate}* ya se encuentra *LISTO PARA ENTREGA*.\n`;
     } else {

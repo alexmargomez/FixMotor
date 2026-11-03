@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Modal from './Modal';
-import FactuposLogo from '../assets/factupos.svg';
+import FixMotorLogo from '../assets/fixmotor.svg';
 import FactuPrint from './FactuPrint';
 import { FaFileInvoice, FaPrint, FaTimes, FaUser, FaMotorcycle, FaWhatsapp } from 'react-icons/fa';
 
@@ -163,7 +163,7 @@ const FactuView = ({ id, customerID, vehicleID, total, saleItem, saleData }) => 
     const custName = customer?.name || 'Cliente';
     const vehInfo = vehicle?.plate ? ` (${vehicle.plate} - ${vehicle.make} ${vehicle.model})` : '';
 
-    let msg = `Hola *${custName}*, adjuntamos el resumen de tu factura *${invoiceLabel}* en *FactuPOS*${vehInfo}:\n\n`;
+    let msg = `Hola *${custName}*, adjuntamos el resumen de tu factura *${invoiceLabel}* en *FixMotor*${vehInfo}:\n\n`;
     if (services.length > 0) {
       msg += `🔧 *Servicios ($ ${formatPrice(subtotalServicios)}):*\n`;
       services.forEach((s) => {
@@ -231,12 +231,12 @@ const FactuView = ({ id, customerID, vehicleID, total, saleItem, saleData }) => 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-white p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center shadow-2xs">
                 <img
-                  src={FactuposLogo}
-                  alt="FactuPOS"
+                  src={FixMotorLogo}
+                  alt="FixMotor"
                   className="h-14 object-contain mb-2"
                 />
                 <span className="text-xs font-bold text-[#023047] uppercase">
-                  FactuPOS
+                  FixMotor
                 </span>
                 <span className="text-[11px] text-slate-500">
                   Servicio Técnico y Repuestos

@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Validación de solicitud para el alta y actualización de clientes en FactuPOS.
+ * Validación de solicitud para el alta y actualización de clientes en FixMotor.
  */
 class StoreCustomerRequest extends FormRequest
 {

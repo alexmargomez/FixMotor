@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Validación de solicitud para la creación y actualización de productos
- * e inventario valorizado en el catálogo de FactuPOS.
+ * e inventario valorizado en el catálogo de FixMotor.
  */
 class StoreProductRequest extends FormRequest
 {

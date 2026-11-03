@@ -37,7 +37,7 @@ const NavBar = () => {
         </div>
         <div className="hidden lg:flex flex-col overflow-hidden">
           <span className="font-extrabold text-sm tracking-wide text-white truncate">
-            FACTUPOS
+            FIXMOTOR
           </span>
           <span className="text-[11px] text-sky-300 font-medium truncate">
             Sistema POS y Taller

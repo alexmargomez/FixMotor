@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factura #{{ $invoice->invoice_number }} - FactuPOS</title>
+    <title>Factura #{{ $invoice->invoice_number }} - FixMotor</title>
     <style>
         * {
             box-sizing: border-box;
@@ -177,15 +177,15 @@
             <tr>
                 <td style="width: 40%;">
                     @if(!empty($logoBase64))
-                        <img src="{{ $logoBase64 }}" class="company-logo" alt="FactuPOS">
+                        <img src="{{ $logoBase64 }}" class="company-logo" alt="FixMotor">
                     @else
-                        <h2 style="margin:0; color:#023047;">FACTUPOS</h2>
+                        <h2 style="margin:0; color:#023047;">FIXMOTOR</h2>
                     @endif
                 </td>
                 <td class="company-info" style="width: 60%;">
-                    <h1>FactuPOS</h1>
+                    <h1>FixMotor</h1>
                     <p>Carrera 11 #1-11 | Servicio Técnico y Repuestos</p>
-                    <p>Email: info@factupos.com | Teléfono: 123-456-789</p>
+                    <p>Email: info@fixmotor.com | Teléfono: 123-456-789</p>
                     <p>NIT: 123456789-0</p>
                     <div class="invoice-badge">
                         FACTURA N° {{ $invoice->invoice_number }}
@@ -279,7 +279,7 @@
         </table>
 
         <footer>
-            <p><strong>¡Gracias por confiar en FactuPOS!</strong> — Conserve esta factura para efectos de garantía.</p>
+            <p><strong>¡Gracias por confiar en FixMotor!</strong> — Conserve esta factura para efectos de garantía.</p>
         </footer>
     </div>
 </body>

@@ -152,7 +152,7 @@ class PosBillingService
         $docNumber = $sale->invoice->invoice_number ?? sprintf('FACT-%06d', $sale->id);
 
         $lines = [
-            "Hola *{$customerName}*, te enviamos tu *{$docTitle}* de *FactuPOS Taller*:",
+            "Hola *{$customerName}*, te enviamos tu *{$docTitle}* de *FixMotor Taller*:",
             "",
             "🧾 *Documento:* {$docNumber}",
             "📅 *Fecha:* " . ($sale->created_at ? $sale->created_at->format('Y-m-d H:i') : Carbon::now()->format('Y-m-d H:i')),
@@ -204,5 +204,167 @@ class PosBillingService
             'message' => $message,
             'whatsapp_url' => $whatsappUrl,
         ];
+    }
+
+    /**
+     * Registra de forma transaccional una venta POS, descontando existencias en bodega,
+     * creando movimientos de kardex, asociando servicios de taller y acumulando comisiones.
+     *
+     * @param array<string, mixed> $validated
+     * @return Sale
+     */
+    public function createSaleTransaction(array $validated): Sale
+    {
+        return DB::transaction(function () use ($validated) {
+            $totalVal = (int) $validated['total'];
+            $paidVal = array_key_exists('paid_amount', $validated) && $validated['paid_amount'] !== null
+                ? (int) $validated['paid_amount']
+                : $totalVal;
+            $pendingVal = array_key_exists('pending_balance', $validated) && $validated['pending_balance'] !== null
+                ? max(0, (int) $validated['pending_balance'])
+                : max(0, $totalVal - $paidVal);
+
+            $statusVal = $validated['payment_status']
+                ?? ($pendingVal <= 0 ? 'Pagado' : ($paidVal > 0 ? 'Parcial' : 'Pendiente'));
+
+            $sale = Sale::create([
+                'customer_id' => $validated['customer_id'],
+                'vehicle_id' => $validated['vehicle_id'] ?? null,
+                'worker_id' => $validated['worker_id'] ?? null,
+                'total' => $totalVal,
+                'payment_method' => $validated['payment_method'],
+                'payment_status' => $statusVal,
+                'paid_amount' => $paidVal,
+                'pending_balance' => $pendingVal,
+                'payment_notes' => $validated['payment_notes'] ?? null,
+            ]);
+
+            if (!empty($validated['products']) && is_array($validated['products'])) {
+                $sortedProducts = $validated['products'];
+                // Ordenamiento canónico por product_id ascendente para prevenir Deadlocks SQL entre cajas concurrentes
+                usort(
+                    $sortedProducts,
+                    static fn (array $a, array $b): int => ((int) ($a['id'] ?? 0)) <=> ((int) ($b['id'] ?? 0))
+                );
+
+                $strictStock = !empty($validated['enforce_stock'])
+                    || !empty($validated['strict_stock'])
+                    || (array_key_exists('allow_oversell', $validated) && $validated['allow_oversell'] === false);
+
+                foreach ($sortedProducts as $prod) {
+                    $qty = (int) ($prod['quantity'] ?? $prod['und'] ?? 1);
+                    $priceTotal = (int) ($prod['price_total'] ?? $prod['total'] ?? 0);
+                    $productId = (int) $prod['id'];
+
+                    if ($qty <= 0) {
+                        throw new \InvalidArgumentException(
+                            "La cantidad solicitada para el producto #{$productId} debe ser mayor a 0."
+                        );
+                    }
+
+                    SaleDetail::create([
+                        'customer_id' => $sale->customer_id,
+                        'sale_id' => $sale->id,
+                        'product_id' => $productId,
+                        'quantity' => $qty,
+                        'price_total' => $priceTotal,
+                    ]);
+
+                    $inventory = \App\Models\Inventory::where('product_id', $productId)
+                        ->lockForUpdate()
+                        ->first();
+                    if (!$inventory) {
+                        $inventory = \App\Models\Inventory::create([
+                            'product_id' => $productId,
+                            'stock' => 0,
+                        ]);
+                    }
+                    if ($strictStock && (int) $inventory->stock < $qty) {
+                        throw new \InvalidArgumentException(
+                            "Stock insuficiente para el producto #{$productId} (disponible: {$inventory->stock}, solicitado: {$qty})."
+                        );
+                    }
+                    $decrementAmount = $strictStock ? $qty : min(max(0, (int) $inventory->stock), $qty);
+                    if ($decrementAmount > 0) {
+                        $inventory->decrement('stock', $decrementAmount);
+                    }
+
+                    \App\Models\InventoryMovement::create([
+                        'inventory_id' => $inventory->id,
+                        'movement_type' => 'outgoing',
+                        'quantity' => $qty,
+                        'movement_date' => now(),
+                        'reason' => 'Venta #' . $sale->id,
+                    ]);
+                }
+            }
+
+            $totalServicio = 0;
+            if (!empty($validated['services']) && is_array($validated['services'])) {
+                foreach ($validated['services'] as $srv) {
+                    $srvPrice = (int) ($srv['price'] ?? 0);
+                    Service::create([
+                        'customer_id' => $sale->customer_id,
+                        'vehicle_id' => $sale->vehicle_id,
+                        'sale_id' => $sale->id,
+                        'date' => $srv['date'] ?? 'Servicio general',
+                        'price' => $srvPrice,
+                    ]);
+                    $totalServicio += $srvPrice;
+                }
+            }
+
+            if (!empty($validated['create_invoice'])) {
+                Invoice::create(['sale_id' => $sale->id]);
+            }
+
+            if (!empty($sale->worker_id) && $totalServicio > 0) {
+                Worker::where('id', $sale->worker_id)->increment('totalDia', $totalServicio);
+            }
+
+            $sale->load(['customer', 'vehicle', 'invoice', 'saleDetails.product', 'services', 'worker']);
+            return $sale;
+        });
+    }
+
+    /**
+     * Actualiza una venta o aplica abonos parciales/totales sobre su saldo en cartera
+     * bajo bloqueo pesimista (SELECT ... FOR UPDATE) para evitar Lost Updates en abonos concurrentes.
+     *
+     * @param Sale                 $sale
+     * @param array<string, mixed> $validated
+     * @return Sale
+     */
+    public function updateSaleTransaction(Sale $sale, array $validated): Sale
+    {
+        return DB::transaction(function () use ($sale, $validated) {
+            /** @var Sale $lockedSale */
+            $lockedSale = Sale::where('id', $sale->id)->lockForUpdate()->firstOrFail();
+
+            if (!empty($validated['abono'])) {
+                $abono = (int) $validated['abono'];
+                $currentPaid = $lockedSale->paid_amount !== null
+                    ? (int) $lockedSale->paid_amount
+                    : max(0, (int) $lockedSale->total - (int) $lockedSale->pending_balance);
+                $newPaid = min((int) $lockedSale->total, $currentPaid + $abono);
+                $newPending = max(0, (int) $lockedSale->total - $newPaid);
+
+                $validated['paid_amount'] = $newPaid;
+                $validated['pending_balance'] = $newPending;
+                $validated['payment_status'] = $newPending <= 0 ? 'Pagado' : 'Parcial';
+                unset($validated['abono']);
+            } elseif (array_key_exists('paid_amount', $validated) && $validated['paid_amount'] !== null) {
+                $totalTarget = isset($validated['total']) ? (int) $validated['total'] : (int) $lockedSale->total;
+                $newPaid = (int) $validated['paid_amount'];
+                $newPending = max(0, $totalTarget - $newPaid);
+                $validated['pending_balance'] = $newPending;
+                $validated['payment_status'] = $validated['payment_status']
+                    ?? ($newPending <= 0 ? 'Pagado' : ($newPaid > 0 ? 'Parcial' : 'Pendiente'));
+            }
+
+            $lockedSale->update($validated);
+            $lockedSale->load(['customer', 'vehicle', 'invoice', 'saleDetails.product', 'services', 'worker']);
+            return $lockedSale;
+        });
     }
 }

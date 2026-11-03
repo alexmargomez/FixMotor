@@ -19,7 +19,7 @@ class ExportAccountingCsvCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'factupos:export-csv
+    protected $signature = 'fixmotor:export-csv
                             {--type=all : Tipo de reporte a exportar: sales, inventory, settlements o all}
                             {--from= : Fecha inicial YYYY-MM-DD para el reporte de ventas}
                             {--to= : Fecha final YYYY-MM-DD para el reporte de ventas}
@@ -62,7 +62,7 @@ class ExportAccountingCsvCommand extends Command
             if ($stdout) {
                 $this->line($csv);
             } else {
-                $filePath = $exportDir . "/FactuPOS_Ventas_Cartera_{$dateStamp}.csv";
+                $filePath = $exportDir . "/FixMotor_Ventas_Cartera_{$dateStamp}.csv";
                 File::put($filePath, $csv);
                 $generatedFiles[] = ['Ventas y Cartera POS', $filePath, strlen($csv) . ' bytes'];
             }
@@ -73,7 +73,7 @@ class ExportAccountingCsvCommand extends Command
             if ($stdout) {
                 $this->line($csv);
             } else {
-                $filePath = $exportDir . "/FactuPOS_Inventario_Valorizado_{$dateStamp}.csv";
+                $filePath = $exportDir . "/FixMotor_Inventario_Valorizado_{$dateStamp}.csv";
                 File::put($filePath, $csv);
                 $generatedFiles[] = ['Inventario Valorizado (Costo vs Venta)', $filePath, strlen($csv) . ' bytes'];
             }
@@ -84,7 +84,7 @@ class ExportAccountingCsvCommand extends Command
             if ($stdout) {
                 $this->line($csv);
             } else {
-                $filePath = $exportDir . "/FactuPOS_Liquidaciones_Mecanicos_{$dateStamp}.csv";
+                $filePath = $exportDir . "/FixMotor_Liquidaciones_Mecanicos_{$dateStamp}.csv";
                 File::put($filePath, $csv);
                 $generatedFiles[] = ['Historial Liquidaciones Mecánicos', $filePath, strlen($csv) . ' bytes'];
             }

@@ -1,6 +1,6 @@
-# 🧾 FactuPOS — Sistema Integral POS, Facturación, Inventario Valorizado y Gestión Kanban de Taller
+# 🧾 FixMotor — Sistema Integral POS, Facturación, Inventario Valorizado y Gestión Kanban de Taller
 
-**FactuPOS** es una plataforma web autoalojada (self-hosted), rápida y transaccional diseñada para la administración integral de puntos de venta (**POS**), emisión de facturas y cotizaciones en PDF/HTML y WhatsApp, control de **inventario valorizado (Costo vs. Venta)** con lector de código de barras (**SKU**), directorio de proveedores, **tablero Kanban de órdenes de taller en vivo**, alertas preventivas de vehículos (**SOAT, Tecnomecánica y Cambio de Aceite**), arqueo de caja con control de cartera (créditos/abonos) y liquidación auditable de comisiones de mecánicos.
+**FixMotor** es una plataforma web autoalojada (self-hosted), rápida y transaccional diseñada para la administración integral de puntos de venta (**POS**), emisión de facturas y cotizaciones en PDF/HTML y WhatsApp, control de **inventario valorizado (Costo vs. Venta)** con lector de código de barras (**SKU**), directorio de proveedores, **tablero Kanban de órdenes de taller en vivo**, alertas preventivas de vehículos (**SOAT, Tecnomecánica y Cambio de Aceite**), arqueo de caja con control de cartera (créditos/abonos) y liquidación auditable de comisiones de mecánicos.
 
 Construido bajo una arquitectura **Monorepo Multicontenedor** (`Backend API REST Laravel 11` + `Frontend React 19` + `Base de Datos MariaDB 11.4`), está optimizado para desplegarse tanto en servidores Linux VPS administrados con **ALpanel** como en entornos locales mediante un único archivo `.env` y `docker compose`.
 
@@ -17,7 +17,7 @@ Construido bajo una arquitectura **Monorepo Multicontenedor** (`Backend API REST
 
 ---
 
-## 🚀 ¿Qué hace único a FactuPOS?
+## 🚀 ¿Qué hace único a FixMotor?
 
 A diferencia de sistemas POS genéricos que solo facturan productos sueltos de mostrador o agendas aisladas que no cruzan información con caja ni bodega:
 
@@ -38,7 +38,7 @@ A diferencia de sistemas POS genéricos que solo facturan productos sueltos de m
    - Registra el **kilometraje de ingreso** (actualizando automáticamente el odómetro del vehículo) y las **observaciones de recepción** (estado físico, nivel de combustible, accesorios dejados).
    - Cuando el cliente pasa a caja en `/sales`, el POS detecta sus órdenes pendientes y precarga automáticamente los servicios realizados para facturarlos sin doble digitación.
 5. **🔔 Alertas Preventivas (SOAT, Tecnomecánica y Aceite) + Notificaciones WhatsApp en 1 Clic:**
-   - Semáforo automático en `/sales`, `/look` y por consola (`factupos:check-alerts`) cuando un vehículo supera el kilometraje de su **próximo cambio de aceite** o tiene el **SOAT** / **Tecnomecánica** vencidos o próximos a vencer.
+   - Semáforo automático en `/sales`, `/look` y por consola (`fixmotor:check-alerts`) cuando un vehículo supera el kilometraje de su **próximo cambio de aceite** o tiene el **SOAT** / **Tecnomecánica** vencidos o próximos a vencer.
    - Integración directa con **`wa.me`** sin costo de API externa para enviar: comprobantes de factura, cotizaciones detalladas, avisos de *"Vehículo Listo para Entrega"* y recordatorios preventivos al propietario.
 6. **👨‍🔧 Comisiones Configurables por Mecánico, Liquidación Auditable y Exportación Excel (CSV):**
    - Cada técnico posee su propio **`% de Comisión`** configurable (ej. `60% Técnico / 40% Taller` o `50% / 50%`).
@@ -66,7 +66,7 @@ El sistema está dividido en tres capas desacopladas y orquestadas con Docker:
 
 ### 3. Base de Datos e Infraestructura (`docker-compose.yml`)
 - **[MariaDB 11.4 LTS](https://mariadb.org/)** — Motor relacional con volumen persistente (`mariadb_data`), `healthcheck` de auto-sincronización de credenciales y compatibilidad nativa con el inspector **Base de Datos** y **Usuarios App** de **ALpanel**.
-- **[Docker & Docker Compose v2](https://docs.docker.com/compose/)** — Orquestación de los 3 contenedores (`factupos-mariadb`, `factupos-backend`, `factupos-frontend`) en red bridge aislada (`factupos-network`).
+- **[Docker & Docker Compose v2](https://docs.docker.com/compose/)** — Orquestación de los 3 contenedores (`fixmotor-mariadb`, `fixmotor-backend`, `fixmotor-frontend`) en red bridge aislada (`fixmotor-network`).
 
 ---
 
@@ -78,8 +78,8 @@ El sistema está dividido en tres capas desacopladas y orquestadas con Docker:
 
 ### 2. Clonar el Repositorio y Configurar `.env`
 ```bash
-git clone https://github.com/alexmargomez/Factupos.git
-cd Factupos
+git clone https://github.com/alexmargomez/FixMotor.git
+cd FixMotor
 cp .env.example .env
 ```
 
@@ -97,15 +97,15 @@ DB_EXTERNAL_PORT=3309
 
 # 2. Base de Datos (MariaDB 11.4)
 DB_CONNECTION=mariadb
-DB_HOST=factupos-mariadb
+DB_HOST=fixmotor-mariadb
 DB_PORT=3306
-DB_DATABASE=factupos
-DB_USERNAME=factupos_user
-DB_PASSWORD=factupos_pass
-DB_ROOT_PASSWORD=factupos_pass
+DB_DATABASE=fixmotor
+DB_USERNAME=fixmotor_user
+DB_PASSWORD=fixmotor_pass
+DB_ROOT_PASSWORD=fixmotor_pass
 
 # 3. Backend (Laravel 11 API)
-APP_NAME="Factupos"
+APP_NAME="FixMotor"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:${BACKEND_PORT}
@@ -121,25 +121,25 @@ docker compose up -d --build
 ```
 
 Al iniciar el stack, Docker Compose ejecuta el aprovisionamiento completo sin intervención manual:
-1. **`factupos-mariadb` (`3309:3306`)**: Inicializa MariaDB 11.4 y sincroniza la base de datos `factupos` y el usuario `factupos_user` definidos en `.env`.
-2. **`factupos-backend` (`7000:7000`)**: Espera a que MariaDB esté saludable (`service_healthy`), genera `APP_KEY`, ejecuta todas las migraciones (`php artisan migrate --force`) y los datos semilla (`php artisan db:seed --force`).
-3. **`factupos-frontend` (`5173:5173`)**: Levanta la SPA React 19 + Vite y redirige internamente `/api/*` hacia `http://backend:7000`.
+1. **`fixmotor-mariadb` (`3309:3306`)**: Inicializa MariaDB 11.4 y sincroniza la base de datos `fixmotor` y el usuario `fixmotor_user` definidos en `.env`.
+2. **`fixmotor-backend` (`7000:7000`)**: Espera a que MariaDB esté saludable (`service_healthy`), genera `APP_KEY`, ejecuta todas las migraciones (`php artisan migrate --force`) y los datos semilla (`php artisan db:seed --force`).
+3. **`fixmotor-frontend` (`5173:5173`)**: Levanta la SPA React 19 + Vite y redirige internamente `/api/*` hacia `http://backend:7000`.
 
 *(Opcional)* Si deseas poblar la base de datos con un catálogo demostrativo completo de repuestos valorizados, proveedores y técnicos con porcentajes de comisión:
 ```bash
-docker exec -it factupos-backend php artisan db:seed --class=WorkshopCatalogSeeder
+docker exec -it fixmotor-backend php artisan db:seed --class=WorkshopCatalogSeeder
 ```
 
 ---
 
 ## 📐 Convención de Variables y Despliegue en ALpanel
 
-**FactuPOS** sigue el estándar de **3 Variables de Puerto** de **ALpanel**, permitiendo desplegarlo y vincularle un dominio HTTPS en segundos:
+**FixMotor** sigue el estándar de **3 Variables de Puerto** de **ALpanel**, permitiendo desplegarlo y vincularle un dominio HTTPS en segundos:
 
 | Variable en `.env` | Comportamiento en ALpanel |
 | :--- | :--- |
-| **`FRONTEND_PORT`** (`5173`) | Puerto del contenedor `factupos-frontend` expuesto hacia el proxy inverso SSL (Caddy). |
-| **`BACKEND_PORT`** (`7000`) | Puerto del contenedor `factupos-backend` (API Laravel 11) y destino del proxy interno de Vite. |
+| **`FRONTEND_PORT`** (`5173`) | Puerto del contenedor `fixmotor-frontend` expuesto hacia el proxy inverso SSL (Caddy). |
+| **`BACKEND_PORT`** (`7000`) | Puerto del contenedor `fixmotor-backend` (API Laravel 11) y destino del proxy interno de Vite. |
 | **`DB_EXTERNAL_PORT`** (`3309`) | Puerto externo de MariaDB auto-asignado para conexiones desde DBeaver/TablePlus y backups `.sql` en 1 clic. |
 
 ### Credenciales de Acceso Iniciales (Seeder por Defecto)
@@ -158,15 +158,15 @@ docker exec -it factupos-backend php artisan db:seed --class=WorkshopCatalogSeed
 El backend en `API_REST/` implementa una arquitectura limpia desacoplada en **Controladores**, **Servicios de Dominio (`app/Services/`)**, **Validadores (`app/Http/Requests/`)**, **Transformadores (`app/Http/Resources/`)**, **Comandos CLI (`app/Console/Commands/`)** y **Pruebas Automatizadas (`tests/`)**:
 
 ```text
-Factupos/
+FixMotor/
 ├── API_REST/                                # ⚙️ BACKEND LARAVEL 11 (PHP 8.2 + Sanctum + SnappyPDF + PHPUnit)
 │   ├── app/
 │   │   ├── Console/Commands/                # 🖥️ Comandos Artisan CLI de Diagnóstico, Auditoría y Exportación
-│   │   │   ├── AuditInventoryCommand.php            # -> php artisan factupos:audit-inventory
-│   │   │   ├── CheckVehicleAlertsCommand.php        # -> php artisan factupos:check-alerts
-│   │   │   ├── CashboxCloseSummaryCommand.php       # -> php artisan factupos:cashbox-summary
-│   │   │   ├── MechanicsSettlementReportCommand.php # -> php artisan factupos:mechanics-report
-│   │   │   └── ExportAccountingCsvCommand.php       # -> php artisan factupos:export-csv
+│   │   │   ├── AuditInventoryCommand.php            # -> php artisan fixmotor:audit-inventory
+│   │   │   ├── CheckVehicleAlertsCommand.php        # -> php artisan fixmotor:check-alerts
+│   │   │   ├── CashboxCloseSummaryCommand.php       # -> php artisan fixmotor:cashbox-summary
+│   │   │   ├── MechanicsSettlementReportCommand.php # -> php artisan fixmotor:mechanics-report
+│   │   │   └── ExportAccountingCsvCommand.php       # -> php artisan fixmotor:export-csv
 │   │   ├── Http/
 │   │   │   ├── Controllers/                 # 🌐 Controladores RESTful de los 14 módulos de la API
 │   │   │   │   ├── AnalyticsController.php          # Consolidado ejecutivo financiero, bodega, Kanban y alertas
@@ -254,15 +254,15 @@ Factupos/
 
 ## 🖥️ Comandos Artisan CLI de Diagnóstico, Auditoría y Exportación
 
-Puedes ejecutar cualquiera de los **5 comandos Artisan especializados** directamente dentro del contenedor backend (`docker exec -it factupos-backend php artisan <comando>`):
+Puedes ejecutar cualquiera de los **5 comandos Artisan especializados** directamente dentro del contenedor backend (`docker exec -it fixmotor-backend php artisan <comando>`):
 
 | Comando Artisan | Opciones Disponibles | Descripción |
 | :--- | :--- | :--- |
-| `factupos:audit-inventory` | `--only-alerts`, `--json` | Audita el inventario valorizado (capital al costo, venta potencial, utilidad proyectada, margen ponderado) y lista los SKUs bajo el stock mínimo. |
-| `factupos:check-alerts` | `--days=15`, `--km=500`, `--json` | Inspecciona el estado del tablero Kanban y detecta vehículos con cambio de aceite vencido/próximo, SOAT vencido o Tecnomecánica por vencer. |
-| `factupos:cashbox-summary` | `--from=YYYY-MM-DD`, `--to=YYYY-MM-DD`, `--json` | Genera el arqueo de caja completo: total facturado, recaudado, cartera por cobrar, utilidad en repuestos, mano de obra, gastos y utilidad neta real. |
-| `factupos:mechanics-report` | `--from=YYYY-MM-DD`, `--to=YYYY-MM-DD`, `--json` | Muestra el acumulado pendiente de liquidar por mecánico y el consolidado histórico de comisiones pagadas vs. utilidad retenida por el taller. |
-| `factupos:export-csv` | `--type=all\|sales\|inventory\|settlements`, `--stdout` | Exporta los reportes contables en formato CSV (con BOM UTF-8 listo para Excel) en `storage/app/exports/` o por salida estándar. |
+| `fixmotor:audit-inventory` | `--only-alerts`, `--json` | Audita el inventario valorizado (capital al costo, venta potencial, utilidad proyectada, margen ponderado) y lista los SKUs bajo el stock mínimo. |
+| `fixmotor:check-alerts` | `--days=15`, `--km=500`, `--json` | Inspecciona el estado del tablero Kanban y detecta vehículos con cambio de aceite vencido/próximo, SOAT vencido o Tecnomecánica por vencer. |
+| `fixmotor:cashbox-summary` | `--from=YYYY-MM-DD`, `--to=YYYY-MM-DD`, `--json` | Genera el arqueo de caja completo: total facturado, recaudado, cartera por cobrar, utilidad en repuestos, mano de obra, gastos y utilidad neta real. |
+| `fixmotor:mechanics-report` | `--from=YYYY-MM-DD`, `--to=YYYY-MM-DD`, `--json` | Muestra el acumulado pendiente de liquidar por mecánico y el consolidado histórico de comisiones pagadas vs. utilidad retenida por el taller. |
+| `fixmotor:export-csv` | `--type=all\|sales\|inventory\|settlements`, `--stdout` | Exporta los reportes contables en formato CSV (con BOM UTF-8 listo para Excel) en `storage/app/exports/` o por salida estándar. |
 
 ---
 
@@ -272,10 +272,10 @@ El backend cuenta con **14 suites de pruebas automatizadas** divididas entre pru
 
 ```bash
 # Ejecutar toda la suite de pruebas dentro del contenedor Backend
-docker exec -it factupos-backend php artisan test
+docker exec -it fixmotor-backend php artisan test
 
 # Ejecutar una suite específica (ej. Ventas POS, Créditos y Abonos)
-docker exec -it factupos-backend php artisan test --filter=PosSalesAndReceivablesTest
+docker exec -it fixmotor-backend php artisan test --filter=PosSalesAndReceivablesTest
 ```
 
 ### Cobertura de las 14 Suites de Pruebas
@@ -288,7 +288,7 @@ docker exec -it factupos-backend php artisan test --filter=PosSalesAndReceivable
 7. **`SanctumAuthenticationAndSecurityTest`**: Emisión de tokens Bearer en `/api/login`, rechazo de credenciales inválidas, bloqueo `HTTP 401` en endpoints protegidos y revocación de tokens en `/api/logout`.
 8. **`CustomerAndVehicleHistoryReportTest`**: Trazabilidad histórica de repuestos y mantenimientos por cliente y por placa de vehículo, y generación de facturas `FACT-XXXXXX`.
 9. **`CustomerLoyaltyAndTopProductsTest`**: Consolidación del expediente financiero/técnico del cliente (`CustomerLoyaltyAndHistoryService`), ranking de productos más vendidos y ejecución idempotente de `WorkshopCatalogSeeder`.
-10. **`ArtisanDiagnosticCommandsTest`**: Ejecución automatizada de los comandos CLI `factupos:audit-inventory`, `factupos:check-alerts`, `factupos:cashbox-summary` y `factupos:mechanics-report`.
+10. **`ArtisanDiagnosticCommandsTest`**: Ejecución automatizada de los comandos CLI `fixmotor:audit-inventory`, `fixmotor:check-alerts`, `fixmotor:cashbox-summary` y `fixmotor:mechanics-report`.
 11. **`FormRequestValidationRulesTest`**: Validación exhaustiva de reglas y mensajes personalizados en español de las 14 clases `FormRequest`.
 12. **`EloquentApiResourcesSerializationTest`**: Verificación de contratos JSON y campos calculados en las 9 clases `JsonResource`.
 13. **`WorkerCommissionCalculationsUnitTest` & `InventoryValuationCalculationsUnitTest` & `FinancialAndMarginCalculationsTest`**: Pruebas unitarias puras en memoria de partición exacta de comisiones (`0%` a `100%`), márgenes comerciales, normalización de pagos mixtos/créditos y codificación CSV UTF-8 BOM.
